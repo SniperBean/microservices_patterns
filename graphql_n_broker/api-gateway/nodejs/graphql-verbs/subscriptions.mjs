@@ -4,8 +4,8 @@ const { withFilter } = filter;
 
 export function getTestSub (_, args, context) {
     const pubsub = getPubSub(
-        'my-first-application',
-        '127.0.0.1',
+        'test-topic',
+        'kafka',
         '9092',
         {}
     )
