@@ -20,13 +20,6 @@ spec:
         image: api-gateway:1-broker
         ports:
         - containerPort: 80
-        env:
-        - name: USER_SVC
-          value: user-service-svc
-        - name: ITEM_SVC
-          value: item-service-svc
-        - name: ORDER_SVC
-          value: order-service-svc
 
 ---
 
@@ -43,3 +36,71 @@ spec:
       port: 80
       targetPort: 80
 
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: item-service-deploy
+  labels:
+    app: item-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: item-service
+  template:
+    metadata:
+       labels:
+         app: item-service
+    spec:
+      containers:
+      - name: item-service
+        imagePullPolicy: Never
+        image: item-service:1-broker
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-deploy
+  labels:
+    app: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+       labels:
+         app: user-service
+    spec:
+      containers:
+      - name: user-service
+        imagePullPolicy: Never
+        image: user-service:1-broker
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-deploy
+  labels:
+    app: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+       labels:
+         app: order-service
+    spec:
+      containers:
+      - name: order-service
+        imagePullPolicy: Never
+        image: order-service:1-broker
