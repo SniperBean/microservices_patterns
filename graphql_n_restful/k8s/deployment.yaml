@@ -17,7 +17,7 @@ spec:
       containers:
       - name: api-gateway
         imagePullPolicy: Never
-        image: api-gateway:2-restful
+        image: api-gateway:1-restful
         ports:
         - containerPort: 80
         env:
