@@ -1,13 +1,22 @@
 from typing import Optional
 from fastapi import FastAPI, Request
+from fastapi_opentracing import get_opentracing_span_headers
+from fastapi_opentracing.middleware import OpenTracingMiddleware
 
 app = FastAPI()
+app.add_middleware(OpenTracingMiddleware)
 
 dummy_dict = {
     "item-1": {"name": "Microservice patterns", "detail": "Introduce modern architecture pattern."},
     "item-2": {"name": "Release it! 2nd edition", "detail": "Case study and consulting skills share."},
     "item-3": {"name": "Designing Event-Driven Systems", "detail": "Design event-driven architecture in action."}
 }
+
+
+@app.get("/")
+async def root():
+    carrier = await get_opentracing_span_headers()
+    return {'span': carrier}
 
 
 @app.get("/api/items")

@@ -64,7 +64,7 @@ spec:
       containers:
       - name: user-service
         imagePullPolicy: Never
-        image: user-service:1-restful
+        image: user-service:2-restful
         ports:
         - containerPort: 80
 
@@ -104,7 +104,7 @@ spec:
       containers:
       - name: item-service
         imagePullPolicy: Never
-        image: item-service:1-restful
+        image: item-service:2-restful
         ports:
         - containerPort: 80
 
@@ -144,7 +144,7 @@ spec:
       containers:
       - name: order-service
         imagePullPolicy: Never
-        image: order-service:1-restful
+        image: order-service:2-restful
         ports:
         - containerPort: 80
         env:

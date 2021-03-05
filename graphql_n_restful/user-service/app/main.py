@@ -1,7 +1,10 @@
 from typing import Optional
 from fastapi import FastAPI, Request
+from fastapi_opentracing import get_opentracing_span_headers
+from fastapi_opentracing.middleware import OpenTracingMiddleware
 
 app = FastAPI()
+app.add_middleware(OpenTracingMiddleware)
 
 dummy_list = [
         {
@@ -27,8 +30,14 @@ dummy_list = [
     ]
 
 
+@app.get("/")
+async def root():
+    carrier = await get_opentracing_span_headers()
+    return {'span': carrier}
+
+
 @app.get("/api/users")
-def read_users():
+def read_users(request: Request):
     return dummy_list
 
 

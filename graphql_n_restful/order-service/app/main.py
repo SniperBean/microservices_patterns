@@ -1,5 +1,8 @@
 from typing import Optional
 from fastapi import FastAPI, Request
+from fastapi_opentracing import get_opentracing_span_headers
+from fastapi_opentracing.middleware import OpenTracingMiddleware
+
 from app.settings import (
     USER_SVC,
     ITEM_SVC
@@ -8,6 +11,8 @@ import copy
 import requests
 
 app = FastAPI()
+app.add_middleware(OpenTracingMiddleware)
+
 
 dummy_list = [
         {
@@ -60,17 +65,32 @@ dummy_list = [
         }
     ]
 
+@app.get("/")
+async def root():
+    headers = await get_opentracing_span_headers()
+    print(headers)
+    return {'span': headers}
+
 
 @app.get("/api/orders")
-def read_users():
+async def read_users():
+    headers = await get_opentracing_span_headers()
     protocol = "http"
     user_domain = USER_SVC
     user_path = "api/users"
     item_domain = ITEM_SVC
     item_path = "api/items"
     mapping_list = copy.deepcopy(dummy_list)
-    users_response = requests.request("GET", f"{protocol}://{user_domain}/{user_path}")
-    items_response = requests.request("GET", f"{protocol}://{item_domain}/{item_path}")
+    users_response = requests.request(
+        "GET",
+        f"{protocol}://{user_domain}/{user_path}",
+        headers=headers
+    )
+    items_response = requests.request(
+        "GET",
+        f"{protocol}://{item_domain}/{item_path}",
+        headers=headers
+    )
     users = eval(users_response.content.decode("utf-8"))
     items = eval(items_response.content.decode("utf-8"))
 
@@ -80,8 +100,8 @@ def read_users():
 
     return mapping_list
 
-# TODO: TBD in the future
 
+# TODO: TBD in the future
 @app.get("/api/order/{id}")
 def read_user(id: int, request: Request):
     pass
